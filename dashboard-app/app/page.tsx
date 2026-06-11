@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { useState, useEffect } from "react"
 import Bookmark from "./bookmark";
+import styles from "./page.module.css";
 
 export interface BookmarkData {
   url: string;
@@ -69,6 +70,12 @@ export default function HomePage() {
           />
         ))}
       </div>
+
+      <input type="text" className={styles.searchBar}>
+      
+      </input>
+      <Image src="/globe.svg" alt="Search Icon" width={200} height={20} className={styles.searchIcon} />
+
     </>
     
   );

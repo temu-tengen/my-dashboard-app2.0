@@ -14,7 +14,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: darkgrey;
+    --background: black;
     --foreground: #ededed;
   }
 }
@@ -27,7 +27,6 @@ body {
 }
 
 .heading-text {
-  color: white;
   font-weight: bolder;
   font-size: 100;
 }
@@ -83,4 +82,10 @@ body {
   font-size: 25;
   display: flex;
   gap: 50px;
+}
+
+.hideBtn:hover {
+  background-color: grey;
+  border: 2px solid white;
+  transition: all 0.3s ease;
 }

@@ -2,6 +2,8 @@
 import Image from "next/image";
 import { useState, useEffect } from "react"
 import Bookmark from "./bookmark";
+import CustomizeMenu from "./customizemenu";
+
 import styles from "./page.module.css";
 
 export interface BookmarkData {
@@ -19,9 +21,11 @@ const DEFAULT_BOOKMARKS: BookmarkData[] = [
 export default function HomePage() {
   const [time, setTime] = useState("Shalin Was Here");
   const [bookmarks, setBookmarks] = useState<BookmarkData[]>(DEFAULT_BOOKMARKS);
+  const [url, setUrl] = useState("");
+  const [showCustomizeMenu, setShowCustomizeMenu] = useState(false);
 
   var date = new Date().toLocaleDateString();
-  
+
   // Load bookmarks from localStorage on mount
   useEffect(() => {
     const savedBookmarks = localStorage.getItem("bookmarks");
@@ -44,19 +48,28 @@ export default function HomePage() {
     newBookmarks[index] = updatedBookmark;
     setBookmarks(newBookmarks);
   };
-  
+
   useEffect(() => {
     const clockInterval = setInterval(() => {
       setTime(new Date().toLocaleTimeString());
     }, 1000);
-    
+
     return () => {
       clearInterval(clockInterval);
     };
   }, []);
 
+  const searchHandler = () => {
+    if (url.startsWith("http://") || url.startsWith("https://")) {
+      window.open(url);
+    } else if ( url.endsWith(".com") || url.endsWith(".org") || url.endsWith(".net")){
+      window.open(`https://${url}`);
+    } else {
+      window.open(`https://www.google.com/search?q=${url}`)
+    }
+  }
   return (
-    <>   
+    <>
       <h1 className="heading-text">{time}</h1>
       <h2 className="date-text">{date}</h2>
       <div className="bookmarks-row">
@@ -71,12 +84,21 @@ export default function HomePage() {
         ))}
       </div>
 
-      <input type="text" className={styles.searchBar}>
-      
-      </input>
-      <Image src="/globe.svg" alt="Search Icon" width={200} height={20} className={styles.searchIcon} />
+      <div className={styles.searchContainer}>
+        <input type="text" className={styles.searchBar} id="searchBar" onChange={(e: React.ChangeEvent<HTMLInputElement>) => {setUrl(e.target.value)}} onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+            if (e.key === "Enter") searchHandler();
+          }} placeholder="Enter search query or URL"></input>
+
+        <button className={styles.searchButton} onClick={(e) => {searchHandler()}}>
+          Search
+        </button>
+      </div>
+
+      <Image src="/edit.svg" width={50} height={50} alt="Edit" className={styles.editButton} onClick={() => {setShowCustomizeMenu(!showCustomizeMenu)}}/>
+
+      {showCustomizeMenu && <CustomizeMenu />}
 
     </>
-    
+
   );
 }
